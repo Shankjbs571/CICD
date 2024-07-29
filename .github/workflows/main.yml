@@ -24,7 +24,9 @@ jobs:
       - name: Run Flask application
         run: |
           . venv/bin/activate
-          python app.py
+          python app.py &
+          sleep 60 
+          pkill -f "python app.py"
 
       - name: Run a script
         run: echo "flask app is running" > /home/shankjbs571/message.txt
