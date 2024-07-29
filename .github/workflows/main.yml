@@ -25,7 +25,7 @@ jobs:
         run: |
           . venv/bin/activate
           gunicorn -w 4 -b 0.0.0.0:8000 app:app &
-          echo "Gunicorn is started and flask app is running at 0.0.0.0:8000"
+          echo "Gunicorn is started and flask app is running at 127.0.0.1:8000"
 
       - name: Run a script
         run: echo "Gunicorn is started and flask app is running at 0.0.0.0:8000" > /home/shankjbs571/message.txt
