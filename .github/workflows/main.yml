@@ -21,3 +21,5 @@ jobs:
             ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} "
             echo 'WE CAN LOGIN AND RUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
             "
+
+            # add a comment
