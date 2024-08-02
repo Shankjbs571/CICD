@@ -1,0 +1,48 @@
+[Unit]
+Description=Gunicorn Instance to serve My Flask app
+After=network.target
+
+[Service]
+User=ambar
+Group=www-data
+WorkingDirectory=/home/ambar/ezbit_backend
+Environment=/home/ambar/ezbit_backend/venv/bin
+ExecStart=/home/ambar/ezbit_backend/venv/bin/gunicorn -w 4 -b 0.0.0.0:8000 server:app
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+
+name: Run my Flask Application
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'  
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r req.txt
+
+      - name: Start Gunicorn service
+        run: |
+          sudo systemctl start gunicorn_flask
+          sudo systemctl status gunicorn_flask
+
+      - name: Run a script
+        run: echo "Gunicorn is started and flask app is running at 0.0.0.0:8000" > /home/shankjbs571/message.txt

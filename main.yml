@@ -12,13 +12,12 @@ jobs:
 
       - name: Set up SSH and run a Script
         env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST_NAME: ${{ secrets.HOST_IP_ADDR }}
-          USER_NAME: ${{ secrets.USER_NAME }}
+          PRIVATE_KEY: ${{ secrets.SSHKEY }}
+          HOST_NAME: ${{ secrets.HOSTNAME }}
+          USER_NAME: ${{ secrets.USERNAME }}
 
         run: | 
             echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-            ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} 
-            "
+            ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} "
             echo 'WE CAN LOGIN AND RUN THE SCRIPT' > /home/ambar/MessageFromActions.txt
             "

@@ -1,0 +1,66 @@
+# name: Run my Flask Application
+
+# on: [push, pull_request]
+
+# jobs:
+#   build:
+#     runs-on: self-hosted
+
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v2
+#         with:
+#           python-version: '3.10'  
+
+#       - name: Install dependencies
+#         run: |
+#           python -m venv venv
+#           source venv/bin/activate
+#           pip install -r req.txt
+
+#       - name: Start Gunicorn service
+#         run: |
+#           sudo systemctl start gunicorn_flask
+#           sudo systemctl status gunicorn_flask
+
+#       - name: Run a script
+#         run: echo "Gunicorn is started and flask app is running at 0.0.0.0:8000" > /home/shankjbs571/message.txt
+name: Run my Flask Application
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        env:
+          PRIVATE_KEY: ${{ secrets.SSHKEY }}
+          HOST_NAME: ${{ secrets.HOSTNAME }}
+          USER_NAME: ${{ secrets.USERNAME }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.10'  
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r req.txt
+
+      - name: Start Gunicorn service
+        run: |
+          sudo systemctl start gunicorn_flask
+          sudo systemctl status gunicorn_flask
+
+      - name: Run a script
+        run: echo "Gunicorn is started and flask app is running at 0.0.0.0:8000" > /home/shankjbs571/message.txt
