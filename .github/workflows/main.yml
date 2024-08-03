@@ -20,7 +20,7 @@ jobs:
             echo ${PRIVATE_KEY} > private_key && chmod 600 private_key
             ssh -vvv -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} 
             "
-            echo 'WE CAN LOGIN AND ggRUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
+            echo 'WE CAN LOGIN AND RUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
             "
             
 
