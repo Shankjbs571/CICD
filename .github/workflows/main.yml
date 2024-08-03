@@ -11,18 +11,21 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Set up SSH
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > private_key.pem
+        chmod 600 private_key.pem
+        mkdir -p ~/.ssh
+        cp private_key.pem ~/.ssh/id_rsa
+        ssh-keyscan -H 3.211.3.181 >> ~/.ssh/known_hosts
 
     - name: Deploy to VM
       env:
         SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@3.211.3.181 << 'EOF'
-        "
-        echo 'WE CAN LOGIN AND ggRUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
-        "
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@3.211.3.181 << 'EOF'
+        echo 'WE CAN LOGIN AND RUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
+        EOF
+
 
     # steps:
       # - name: Checkout repository
