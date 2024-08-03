@@ -22,4 +22,3 @@ jobs:
             echo 'WE CAN LOGIN AND RUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
             "
 
-            # add a comment
