@@ -7,18 +7,47 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up SSH and run a Script
-        env:
-          PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          HOST_NAME: ${{ secrets.HOST_IP_ADDR }}
-          USER_NAME: ${{ secrets.USER_NAME }}
+    - name: Set up SSH
+      run: |
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d > private_key.pem
+        chmod 600 private_key.pem
+        mkdir -p ~/.ssh
+        cp private_key.pem ~/.ssh/id_rsa
+        ssh-keyscan -H 3.211.3.181 >> ~/.ssh/known_hosts
 
-        run: | 
-            echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-            ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} 
-            "
-            echo 'WE CAN LOGIN AND RUN THE SCRIPT' > /home/ambar/MessageFromActions.txt
-            "
+    - name: Deploy to VM
+      env:
+        SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ubuntu@3.211.3.181 << 'EOF'
+        cd /home/ubuntu/myproject/CICD
+          git pull origin master
+          source env/bin/activate
+          pip install -r req.txt
+          nohup python3 app.py > /home/ubuntu/FlaskLog/app.log 2>&1 &
+          echo 'WE are logged In from Github Actions hh' > /home/ubuntu/MessageFromActions.txt
+          cat /home/ubuntu/MessageFromActions.txt
+        EOF
+
+
+    # steps:
+      # - name: Checkout repository
+      #   uses: actions/checkout@v2
+
+      # - name: Set up SSH and run a Script
+      #   env:
+      #     PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     HOST_NAME: ${{ secrets.HOST_IP_ADDR }}
+      #     USER_NAME: ${{ secrets.USER_NAME }}
+
+      #   run: | 
+      #       echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+      #       ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOST_NAME} 
+            # "
+            # echo 'WE CAN LOGIN AND ggRUN THE SCRIPT' > /home/ubuntu/MessageFromActions.txt
+            # "
+            
+
